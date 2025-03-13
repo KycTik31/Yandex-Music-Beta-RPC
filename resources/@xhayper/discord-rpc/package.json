@@ -1,0 +1,46 @@
+{
+    "name": "@xhayper/discord-rpc",
+    "version": "1.2.0",
+    "description": "a fork of discordjs/RPC",
+    "main": "dist/index.js",
+    "author": "xhayper",
+    "license": "ISC",
+    "types": "dist/index.d.ts",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/xhayper/discord-rpc.git"
+    },
+    "bugs": {
+        "url": "https://github.com/xhayper/discord-rpc/issues"
+    },
+    "homepage": "https://github.com/xhayper/discord-rpc#readme",
+    "keywords": [
+        "typescript",
+        "discord",
+        "ipc",
+        "rpc",
+        "rich-presence",
+        "discord-rpc",
+        "discord-ipc"
+    ],
+    "scripts": {
+        "build": "rimraf dist && tsc",
+        "prepack": "pnpm run build"
+    },
+    "dependencies": {
+        "@discordjs/rest": "^2.3.0",
+        "@vladfrangu/async_event_emitter": "^2.4.4",
+        "discord-api-types": "^0.37.93",
+        "ws": "^8.18.0"
+    },
+    "devDependencies": {
+        "@sapphire/ts-config": "^5.0.1",
+        "@types/node": "^16",
+        "@types/ws": "^8.5.12",
+        "rimraf": "^6.0.1",
+        "typescript": "^5.5.4"
+    },
+    "engines": {
+        "node": ">=16.11.0"
+    }
+}

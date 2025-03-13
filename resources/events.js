@@ -19,28 +19,32 @@ const eventsLogger = new Logger_js_1.Logger('Events');
 const isBoolean = (value) => {
     return typeof value === 'boolean';
 };
-const DiscordRPC = require('discord-rpc');
+const DiscordRPC = require('@xhayper/discord-rpc');
 const clientId = '1040691530429628509';
-
-const rpc = new DiscordRPC.Client({ transport: 'ipc' });
 
 let toStart = true;
 let isplaying = false;
 
+let rpc;
+
 async function setActivity(data, isPlaying) {
-	if (!data.enabled) {rpc.clearActivity(); return};
+	if (!data.enabled) {rpc.user.clearActivity(); return};
+	if (!rpc.user) return;
 	if (isPlaying) {
-		rpc.setActivity({
+		rpc.user.setActivity({
+			type: 2,
 			details: data.track_name,
 			state: data.artist,
-			endTimestamp: new Date().getTime() + (data.track_lenght - data.current_time),
+			startTimestamp: Date.now() - data.current_time - 1000,
+			endTimestamp: Date.now() + data.track_lenght - data.current_time,
 			largeImageKey: data.track_img,
 			buttons: [
 				{ label: "Трек", url: data.track_link}
 			]
 		})
 	} else {
-		rpc.setActivity({
+		rpc.user.setActivity({
+			type: 2,
 			details: data.track_name,
 			state: data.artist,
 			largeImageKey: data.track_img,
@@ -51,7 +55,35 @@ async function setActivity(data, isPlaying) {
 	}
 }
 
-rpc.login({ clientId: clientId }).catch(console.error);
+function initRpc(){
+    rpc = new DiscordRPC.Client({ clientId: clientId });
+
+    rpc.login().catch(e => {
+        console.error("Exception: ", e);
+        setTimeout(initRpc, 3000);
+    });
+
+    rpc.on("ready", () => {
+        console.log("ready");
+    });
+
+    rpc.on("disconnected", () => {
+        console.log("disconnected");
+        setTimeout(initRpc, 3000);
+    });
+
+    rpc.on("error", () => {
+        console.log("error");
+        setTimeout(initRpc, 3000);
+    });
+    rpc.on("close", () => {
+        console.log("close");
+        setTimeout(initRpc, 3000);
+    });
+
+};
+
+initRpc();
 const handleApplicationEvents = (window) => {
     const updater = (0, updater_js_1.getUpdater)();
     electron_1.ipcMain.on(events_js_1.Events.WINDOW_MINIMIZE, () => {
